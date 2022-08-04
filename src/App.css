@@ -1,0 +1,386 @@
+:root {
+  --primary-color: #413f4b;
+  --secondary-color: #646772;
+  --text-color: #fff;
+  --primaryActiveBackgroundColor: #ac1ec3;
+  --secondaryActiveBackgroundColor: #7ecaee;
+}
+
+* {
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+a {
+  color: var(--secondaryActiveBackgroundColor);
+}
+
+.controls input[type="range"],
+.controls progress {
+  z-index: 3000000;
+  width: 100%;
+  accent-color: var(--primaryActiveBackgroundColor);
+  height: 20px;
+}
+
+button:focus,
+progress:focus {
+  outline: none;
+}
+
+label {
+  font-weight: 700;
+  font-size: 18px;
+  margin: 1rem 0 .5rem;
+}
+
+body {
+  overflow: hidden;
+}
+
+button {
+  background-color: var(--primaryActiveBackgroundColor);
+  border: none;
+  border-radius: 5px;
+  color: var(--text-color);
+  padding: 10px 15px;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+input[type="text"] {
+  border: 1px solid var(--secondary-color);
+  border-radius: 5px;
+  padding: 10px;
+  font-size: 18px;
+  font-weight: 700;
+  max-width: 200px;
+  margin: 0;
+}
+
+input[type="text"]:disabled {
+  background-color: #fff;
+  color: #000;
+}
+
+.input-step-number {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.input-step-number input {
+  width: calc(100% - 50px);
+}
+
+.input-step-number.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+header {
+  padding: 15px;
+}
+
+.app {
+  width: 100%;
+  height: 100vh;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  background: var(--primary-color);
+  color: var(--text-color);
+  position: relative;
+}
+
+.inline-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 80% auto;
+  gap: 15px;
+  width: 100%;
+  height: calc(100vh - 120px)
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 1rem;
+}
+
+.fileInput {
+  width: 30px;
+  height: 30px;
+  position: relative;
+  overflow: hidden;
+}
+
+.fileInput input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+}
+
+.input-switch {
+  width: 60px;
+  height: 32px;
+  border: 1px solid var(--secondary-color);
+  position: relative;
+  border-radius: 6px;
+}
+
+.input-switch input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+}
+
+.input-switch div {
+  pointer-events: none;
+}
+
+.input-switch div.switch {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  margin-top: -6px;
+  margin-left: -8px;
+  border-radius: 50%;
+  background-color: #fff;
+  pointer-events: none;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+  z-index: 1;
+}
+
+.input-switch div.track {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--secondary-color);
+  z-index: 0;
+  border-radius: 5px;
+}
+
+.input-switch input:checked~div.switch {
+  transform: translateX(36px);
+}
+
+.input-switch input:checked~div.track {
+  background-color: var(--primaryActiveBackgroundColor);
+}
+
+.padsbutton {
+  width: 100%;
+  height: calc(100% - 20px);
+  background-color: #fff;
+  border-radius: 5px;
+  display: grid;
+  grid-template-columns: auto auto auto;
+  grid-template-rows: auto auto auto auto;
+  gap: 20px;
+  background-color: transparent;
+  overflow: auto;
+  padding: 15px;
+}
+
+.padsbutton.disabled {
+  opacity: .5;
+  pointer-events: none;
+}
+
+.padsbutton button {
+  appearance: none;
+  border: 3px solid var(--secondary-color);
+  background-color: transparent;
+  border-radius: 12px;
+  cursor: pointer;
+  position: relative;
+  color: var(--text-color);
+  max-height: 200px;
+  min-width: 120px;
+  margin: 0 0 15px;
+}
+
+.padsbutton button .metadata {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: var(--secondary-color);
+  color: #fff;
+  z-index: 3000;
+  font-size: 12px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.padsbutton button input[type="checkbox"] {
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 100;
+}
+
+.padsbutton button input[type="checkbox"]:checked+div.text-content {
+  background: linear-gradient(118deg, var(--primaryActiveBackgroundColor), var(--secondaryActiveBackgroundColor));
+  background-size: 400% 400%;
+
+  -webkit-animation: AnimationName 30s ease infinite;
+  -moz-animation: AnimationName 30s ease infinite;
+  animation: AnimationName 30s ease infinite;
+}
+
+.padsbutton button .text-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-size: calc(12px + 20%);
+  font-weight: bold;
+  text-transform: uppercase;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 5s ease-in-out;
+  overflow: hidden;
+  border-radius: 10px;
+}
+
+.padsbutton button .controls {
+  position: absolute;
+  bottom: -25px;
+  left: 0;
+  width: 100%;
+}
+
+.padbutton .text-content .fileInput {
+  display: none;
+}
+
+.padbutton:hover .text-content .fileInput {
+  display: block;
+  position: absolute;
+  top: 12px;
+  right: 15px;
+  z-index: 3000;
+}
+
+@keyframes AnimationName {
+  0% {
+    background-position: 0% 50%
+  }
+
+  50% {
+    background-position: 100% 50%
+  }
+
+  100% {
+    background-position: 0% 50%
+  }
+}
+
+.config-panel {
+  box-shadow: 0px -9px 15px 0 rgb(0 0 0 / 20%);
+  width: 100%;
+  padding: 8px;
+}
+
+input[type="range"] {
+  accent-color: var(--primaryActiveBackgroundColor);
+}
+
+@media screen and (max-height: 480px) {
+  .inline-container {
+    grid-template-rows: auto auto;
+    height: calc(100% - 50px);
+    overflow: auto;
+  }
+
+  .padsbutton {
+    background-color: var(--primary-color);
+    overflow: auto;
+    height: 100%;
+    grid-template-rows: auto auto auto;
+  }
+
+  .padbutton .text-content .fileInput {
+    display: block;
+    position: absolute;
+    top: 0px;
+    right: 6px;
+  }
+
+  .padbutton:hover .text-content .fileInput {
+    position: absolute;
+    top: 0px;
+    right: 6px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .config-panel {
+    width: 100%;
+  }
+
+  .padbutton .text-content .fileInput {
+    display: block;
+    position: absolute;
+    top: 0px;
+    right: 6px;
+  }
+
+  .padbutton:hover .text-content .fileInput {
+    position: absolute;
+    top: 0px;
+    right: 6px;
+  }
+
+  .padsbutton {
+    overflow: auto;
+    height: calc(100% - 20px);
+    grid-template-columns: auto auto;
+    grid-template-rows: auto auto;
+    gap: 10px
+  }
+
+  .inline-container {
+    grid-template-columns: 1fr;
+    grid-template-rows: 55vh 1fr;
+    overflow: auto;
+    gap: 2px;
+    height: 100%;
+  }
+
+  .padsbutton button .text-content {
+    font-size: calc(8px + 10%);
+  }
+
+  .padbutton {
+    min-height: 80px
+  }
+
+  .icon {
+    width: 18px;
+  }
+
+  footer span {
+    font-size: 12px;
+  }
+
+}
