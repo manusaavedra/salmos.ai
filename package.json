@@ -17,9 +17,9 @@
     "nodemon": "^2.0.19",
     "style-loader": "^3.3.1",
     "webpack-cli": "^4.10.0",
-    "webpack-dev-middleware": "^5.3.3",
     "webpack-dev-server": "^4.9.3",
-    "webpack-node-externals": "^3.0.0"
+    "webpack-node-externals": "^3.0.0",
+    "webpack": "^5.74.0"
   },
   "keywords": [],
   "author": "",
@@ -34,6 +34,6 @@
     "socket.io": "4.5.1",
     "socket.io-client": "4.5.1",
     "wouter": "2.8.0-alpha.2",
-    "webpack": "^5.74.0"
+    "webpack-dev-middleware": "^5.3.3"
   }
 }
