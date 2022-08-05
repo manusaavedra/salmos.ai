@@ -1,10 +1,6 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
 
-const {
-    NODE_ENV = 'production',
-} = process.env;
-
 const rulesJs = {
     test: /\.js$/,
     loader: 'babel-loader',
@@ -35,7 +31,10 @@ const config = {
         filename: 'bundle.[contenthash].js'
     },   
     plugins: [
-        new HtmlWebpackPlugin({template: __dirname + '/public/index.html'})
+        new HtmlWebpackPlugin({
+            template: __dirname + '/public/index.html',
+            inject: 'body'
+        })
     ],
     module: {
         rules: [ rulesJs, rulesCss ]
