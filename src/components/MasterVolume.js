@@ -16,8 +16,7 @@ export default function MasterVolume() {
     }, [])
 
     const handleChangeVolume = (e) => {
-        const { value } = e.target
-        volume(value)
+        volume(e.target.value)
         socket.emit('volume', { body: value })
     }
 

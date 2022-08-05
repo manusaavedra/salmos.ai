@@ -33,7 +33,7 @@ const config = {
     entry: __dirname + '/src',
     output: {
         path: path.resolve(__dirname, 'build'),
-        filename: 'bundle.js'
+        filename: 'bundle.[contenthash].js'
     },   
     plugins: [
         new HtmlWebpackPlugin({template: __dirname + '/public/index.html'})

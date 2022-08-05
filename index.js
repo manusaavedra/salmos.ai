@@ -86,7 +86,7 @@ app.use(webpackDevMiddleware(webpack(webpackConfig)));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/*', function(req, res) {
-    res.sendFile(path.join(__dirname, 'public/index.html'));
+    res.sendFile(path.join(__dirname, 'build/index.html'));
 })
 
 server.listen(port, () => {
