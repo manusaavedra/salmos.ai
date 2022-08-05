@@ -8,9 +8,8 @@ export default function AppHeader() {
 
     return (
         <header>
-            <h1>Salmos.ai - Server</h1>
+            <h1>Salmos.ai - Master</h1>
             <a id="remote-link"></a>
-            <p>clientId: {socket.id} </p>
             <Link to='/client'>Client</Link>
         </header>
     )

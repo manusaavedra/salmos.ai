@@ -22,7 +22,7 @@ io.on('connection', (socket) => {
     socket.broadcast.emit('handshake', {
         body: 'handshake',
         id: socket.id,
-        url: 'http://localhost/client:' + port 
+        url: 'http://localhost:' + port + '/client'
     });
 
     socket.on('join', (data) => {
@@ -72,6 +72,8 @@ io.on('connection', (socket) => {
             from: socket.id,
             ...data
         });
+
+        console.log('seeking', data);
     });
 
     socket.on('disconnect', () => {

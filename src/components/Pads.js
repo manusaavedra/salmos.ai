@@ -1,13 +1,22 @@
 import { forwardRef, useImperativeHandle, useRef, useContext, useState, useEffect } from "react";
 import { Howl, Howler } from 'howler'
 import { SocketContext } from "../context/ContextSocketIO";
-import { clearButtons } from "../helpers";
+import { clearButtons, stringFormatted } from "../helpers";
 import { FaFolderOpen, FaPlus } from "react-icons/fa";
 
 export function ListPads() {
     const [pads, setPads] = useState([]);
     const socket = useContext(SocketContext);
     const padRef = useRef([]);
+
+    useEffect(() => {
+        socket.emit('join', { body: [] })
+
+        return () => {
+            padRef.current = []           
+        }
+
+    }, [])
 
     const handleAddPad = () => {
 
@@ -21,7 +30,7 @@ export function ListPads() {
 
     const createPads = () => {
         return pads.map((pad, index) => (
-            <PadItem key={pad.id} padId={pad.id} onChange={handleChange} ref={(ref) => padRef.current[index] = ref} />
+            <PadItem key={pad.id} padId={pad.id} onLoaded={initializeSocket} ref={(ref) => padRef.current[index] = ref} />
         ))
     }
 
@@ -29,10 +38,7 @@ export function ListPads() {
         return { filename: pad.getFile(), id: pad.getId }
     })
 
-    const handleChange = () => {
-
-        console.log(getFiles())
-
+    const initializeSocket = () => {
         socket.on('handshake', (data) => {
             const remoteLink = document.getElementById('remote-link')
             remoteLink.href = data.url
@@ -63,27 +69,30 @@ export function ListPads() {
             {
                 createPads()
             }
-            <button className="padbutton" onClick={handleAddPad}>
+            <button onClick={handleAddPad}>
                 <FaPlus size={24} />
             </button>
         </>
     )
 }
 
-const PadItem = forwardRef(({ onChange, padId }, ref) => {
+const PadItem = forwardRef(({ onLoaded, padId }, ref) => {
 
-    const [file, setFile] = useState('')
-    const soundRef = useRef([]);
-    const checkInputRef = useRef([]);
-    const progressRef = useRef([]);
+    const [file, setFile] = useState({ name: '', data: null });
+    const [progress, setProgress] = useState(0)
+    const soundRef = useRef(null);
+    const progressTextRef = useRef();
+    const remainderTextRef = useRef();
+    const checkInputRef = useRef();
+    const progressRef = useRef();
     const socket = useContext(SocketContext);
-    const intervalRef = useRef([]);
+    const intervalRef = useRef();
 
     useImperativeHandle(ref, () => {
         return {
             getId: padId,
             getFile: () => {
-                return file
+                return file.name
             },
             play: () => {
                 checkInputRef.current.checked = true;
@@ -100,78 +109,92 @@ const PadItem = forwardRef(({ onChange, padId }, ref) => {
     })
 
     useEffect(() => {
+
+        if (file.data !== null) {
+            soundRef.current = new Howl({
+                src: [file.data],
+                format: ["mp3"],
+                volume: 1,
+                onplay: () => {
+                    socket.emit('play', { body: padId })
+                    intervalRef.current = progressTimer()
+                },
+                onpause: () => {
+                    socket.emit('pause', { body: padId })
+                    clearInterval(intervalRef.current)
+                },
+                onstop: () => {
+                    socket.emit('stop', { body: padId })
+                    clearInterval(intervalRef.current)
+                },
+                onend: () => {
+                    socket.emit('stop', { body: padId })
+                    socket.emit('progress', { body: 0, duration: soundRef.current.duration() })
+                    checkInputRef.current.checked = false
+                    clearInterval(intervalRef.current)
+                }
+            })
+
+            soundRef.current.on('load', () => {
+                
+                progressRef.current.max = soundRef.current.duration()
+                remainderTextRef.current.innerText = stringFormatted(soundRef.current.duration())
+
+                socket.emit('progress', {body: 0, duration: soundRef.current.duration()})
+
+                socket.on('progress', (data) => {
+                    if (data.id === padId) {
+                        soundRef.current.seek(data.body)
+                        setProgress(data.body)
+                    }
+                })
+
+                socket.on('seeking', (data) => {
+                    if (data.id === padId) {
+                        soundRef.current.seek(data.body)
+                        setProgress(data.body)
+                    }
+                })
+            })
+
+            onLoaded()
+        }
+
         return () => {
             clearInterval(intervalRef.current)
         }
-    }, [])
+
+    }, [file])
 
     const playSound = () => {
-
-        if (file === '') return checkInputRef.current.checked = false;
 
         clearButtons(checkInputRef.current)
         clearInterval(intervalRef.current)
 
-        if (!checkInputRef.current.checked) {
+        if (file === '') return checkInputRef.current.checked = false;
+
+        if (!checkInputRef.current.checked)
             return soundRef.current.stop()
-        }
 
         Howler.stop()
-
         soundRef.current.volume(1)
         soundRef.current.play()
     }
 
-    const handleOnChange = async (e) => {
+    const handleOnChange = (e) => {
 
         if (e.target.files.length > 0) {
             const file = e.target.files[0]
             const reader = new FileReader()
-            let filename = file.name.substring(0, file.name.length - 4)
-            setFile(filename)
+            const filename = file.name.substring(0, file.name.length - 4)
             reader.onload = (e) => {
-                soundRef.current = new Howl({
-                    src: [e.target.result],
-                    format: [file.name.split('.').pop().toLowerCase()],
-                    volume: 1,
-                    onplay: () => {
-                        socket.emit('play', { body: padId })
-                        intervalRef.current = progressTimer()
-                    },
-                    onpause: () => {
-                        socket.emit('pause', { body: padId })
-                        clearInterval(intervalRef.current)
-                    },
-                    onstop: () => {
-                        socket.emit('stop', { body: padId })
-                        clearInterval(intervalRef.current)
-                    },
-                    onend: () => {
-                        socket.emit('stop', { body: padId })
-                        checkInputRef.current.checked = false
-                        clearInterval(intervalRef.current)
-                    }
+                setFile({
+                    name: filename,
+                    data: e.target.result
                 })
-                onChange()
             }
-
             reader.readAsDataURL(file)
-            
         }
-
-        socket.on('progress', (data) => {
-            if (data.id === padId) {
-                soundRef.current.seek(data.body)
-                progressRef.current.value = data.body
-            }
-        })
-
-        socket.on('seeking', (data) => {
-            if (data.id === padId) {
-                soundRef.current.seek(data.body)
-                progressRef.current.value = data.body
-            }
-        })
     }
 
     const progressTimer = () => {
@@ -180,73 +203,69 @@ const PadItem = forwardRef(({ onChange, padId }, ref) => {
                 updateProgress()
             }, 500);
         }
-
-        console.log(soundRef.current.duration())
     }
 
     const updateProgress = () => {
-        if (soundRef.current) {
-            let progress = `${soundRef.current.seek() / soundRef.current.duration() * 100}`
-            progressRef.current.value = progress
-            socket.emit('progress', { 
+        if (soundRef.current.playing()) {
+            let data = {
                 id: padId,
-                body: progress,
+                body: soundRef.current.seek(),
                 duration: soundRef.current.duration()
-            })
+            }
+
+            progressTextRef.current.innerText = stringFormatted(soundRef.current.seek())
+            remainderTextRef.current.innerText = stringFormatted(soundRef.current.duration())
+
+            socket.emit('progress', data)
+            setProgress(soundRef.current.seek())
         }
     }
 
-    const handleSeeking = (e) => {
+    const handleInput = (e) => {
         soundRef.current.stop()
-        
-        let rect = e.target.getBoundingClientRect()
-        let x = e.clientX - rect.left;
-        let percent = x / e.target.offsetWidth;
-        
-        soundRef.current.seek(soundRef.current.duration() * percent)
-        progressRef.current.value = percent * 100
-        socket.emit('seeking', { 
-            id: padId,
-            body: percent * 100, 
-            duration: soundRef.current.duration() 
-        })
+        setProgress(e.target.value)
+    }
 
+    const handleMouseUp = () => {
+        soundRef.current.seek(progress)
+        socket.emit('seeking', {
+            id: padId,
+            body: progress,
+            duration: soundRef.current.duration()
+        })
         soundRef.current.play()
     }
 
-    const sleep = (ms) => {
-        return new Promise(resolve => {
-            setTimeout(() => {
-                resolve()
-            }, ms)
-        })
-    }
-
-    const stopSound = async () => {
-        for (let i = 0; i < 20; i++) {
-            await sleep(20)
-            if (soundRef.current.volume() > 0) {
-                soundRef.current.volume(soundRef.current.volume() - 0.05)
-                console.log(soundRef.current.volume())
-            }
-        }
-        Howler.stop()
-    }
-
     return (
-        <button id={padId} className="padbutton">
-            <div className="controls">
-                <progress ref={progressRef} onClick={handleSeeking} onChange={handleSeeking} className="progress" value={0} min={0} max={100} />
-            </div>
-            <input ref={checkInputRef} type="checkbox" name='note' onChange={playSound} />
-            <div className='text-content'>
-                <span>{file}</span>
-                <div className='fileInput'>
-                    <input type="file" name='file' onChange={handleOnChange} />
-                    <FaFolderOpen className="icon" size={24} />
+        <div className="pad-item">
+            <button id={padId}>
+                <div className="metadata">
+                    <span ref={progressTextRef}>00:00</span>
+                    <span ref={remainderTextRef}>00:00</span>
                 </div>
+                <input ref={checkInputRef} type="checkbox" name='note' onChange={playSound} />
+                <div className='text-content'>
+                    {
+                        file.data !== null ? (
+                            <span>{file.name}</span>
+                        ) : null
+                    }
+                    <div className='fileInput'>
+                        <input type="file" name='file' onChange={handleOnChange} />
+                        <FaFolderOpen className="icon" size={24} />
+                    </div>
+                </div>
+            </button>
+            <div className="controls">
+                <input 
+                    type="range" 
+                    ref={progressRef} 
+                    onChange={handleInput} 
+                    onMouseUp={handleMouseUp} 
+                    onTouchEnd={handleMouseUp}
+                    value={progress} />
             </div>
-        </button>
+        </div>
     )
 })
 

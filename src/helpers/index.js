@@ -6,7 +6,7 @@ export function clearButtons(currentCheckbox) {
     })
 }
 
-export function toStringTime(miliseconds) {
+export function stringFormatted(miliseconds) {
 
     miliseconds = Number(miliseconds).toFixed(0)
     let minute = padLeft(Math.floor((miliseconds / 60) % 60));
