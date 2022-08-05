@@ -1,5 +1,4 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const webpackNodeExternals = require('webpack-node-externals');
 const path = require('path');
 
 const {
