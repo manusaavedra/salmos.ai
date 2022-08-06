@@ -43,10 +43,15 @@ const config = {
 }
 
 module.exports = (env, argv) => {
-    if (argv.mode === 'production') 
+    
+    if (argv.mode === 'production') {
         config.mode = 'production'
-    else if (argv.mode === 'development')
+    }
+    
+    if (argv.mode === 'development') {
         config.mode = 'development'
+        config.devtool = 'source-map'
+    }
     
     return config
 }
