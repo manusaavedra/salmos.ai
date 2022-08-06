@@ -25,7 +25,7 @@ const rulesCss = {
 }
 
 const config = {
-    mode: 'production',
+    mode: 'development',
     entry: path.resolve(__dirname, 'src/index.js'),
     output: {
         path: path.resolve(__dirname, 'build'),
@@ -42,6 +42,4 @@ const config = {
     }
 }
 
-module.exports = (env, argv) => {
-    return config
-}
+module.exports = config;
