@@ -40,9 +40,6 @@ export function ListPads() {
 
     const initializeSocket = () => {
         socket.on('handshake', (data) => {
-            const remoteLink = document.getElementById('remote-link')
-            remoteLink.href = data.url
-            remoteLink.innerText = data.url
             socket.emit('join', { body: getFiles() })
         })
 
