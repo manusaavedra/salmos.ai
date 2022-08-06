@@ -25,14 +25,14 @@ const rulesCss = {
 }
 
 const config = {
-    entry: __dirname + '/src',
+    entry: path.resolve(__dirname, 'src/index.js'),
     output: {
         path: path.resolve(__dirname, 'build'),
-        filename: 'bundle.[contenthash].js'
+        filename: 'bundle.js'
     },   
     plugins: [
         new HtmlWebpackPlugin({
-            template: __dirname + '/public/index.html',
+            template: path.resolve(__dirname, 'public/index.html'),
             inject: 'body'
         })
     ],
