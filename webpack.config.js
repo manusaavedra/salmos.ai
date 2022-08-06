@@ -25,7 +25,7 @@ const rulesCss = {
 }
 
 const config = {
-    mode: 'none',
+    mode: 'production',
     entry: path.resolve(__dirname, 'src/index.js'),
     output: {
         path: path.resolve(__dirname, 'build'),
@@ -39,28 +39,9 @@ const config = {
     ],
     module: {
         rules: [ rulesJs, rulesCss ]
-    },
-    experiments: {
-        asyncWebAssembly: true,
-        buildHttp: true,
-        layers: true,
-        lazyCompilation: true,
-        outputModule: true,
-        syncWebAssembly: true,
-        topLevelAwait: true,
     }
 }
 
 module.exports = (env, argv) => {
-    
-    if (argv.mode === 'production') {
-        config.mode = 'production'
-    }
-    
-    if (argv.mode === 'development') {
-        config.mode = 'development'
-        config.devtool = 'source-map'
-    }
-    
     return config
 }
