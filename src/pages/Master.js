@@ -1,12 +1,15 @@
 import AppHeader from "../components/Header"
 import { ListPads } from "../components/Pads"
 import MasterVolume from "../components/MasterVolume"
+import { Link } from "wouter";
 
 export default function Master() {
 
     return (
         <div className="app">
-            <AppHeader />
+            <AppHeader>
+                <Link to="/client">remote-control</Link>
+            </AppHeader>
             <div className="inline-container">
                 <div className={`padsbutton`}>
                     <ListPads />

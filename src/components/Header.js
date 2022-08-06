@@ -1,12 +1,14 @@
-import React, { useContext } from "react"
-import { Link } from "wouter"
+import React from "react"
+import Logo from "../logo.png"
 
-export default function AppHeader() {
+export default function AppHeader({ title, children }) {
     return (
         <header>
-            <h1>Salmos.ai - Master</h1>
-            <a id="remote-link"></a>
-            <Link to='/client'>Client</Link>
+            <div>
+                <h4>{title}</h4>
+            </div>
+            <img src={Logo} width={160} alt="Salmos.ai" />
+            {children}
         </header>
     )
 }

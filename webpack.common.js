@@ -24,11 +24,19 @@ const rulesCss = {
     ]
 }
 
+const rulesImages = {
+    test: /\.(jpg|png)$/,
+    use: {
+        loader: 'file-loader',
+        loader: 'url-loader',
+    }
+}
+
 module.exports = {
     entry: path.resolve(__dirname, 'src/index.js'),
     output: {
         path: path.resolve(__dirname, 'build'),
-        filename: '[name].[contenthash].js'
+        filename: '[name].js'
     },
     plugins: [
         new HtmlWebpackPlugin({
@@ -38,7 +46,7 @@ module.exports = {
         })
     ],
     module: {
-        rules: [rulesJs, rulesCss]
+        rules: [rulesJs, rulesCss, rulesImages]
     }
 };
 

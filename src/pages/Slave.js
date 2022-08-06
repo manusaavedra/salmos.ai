@@ -1,5 +1,6 @@
 import { forwardRef, useContext, useEffect, useImperativeHandle, useRef, useState } from "react"
 import { Link } from "wouter"
+import AppHeader from "../components/Header"
 import { SocketContext } from "../context/ContextSocketIO"
 import { clearButtons, stringFormatted } from "../helpers"
 
@@ -26,10 +27,9 @@ export default function Slave() {
 
     return (
         <div className='app'>
-            <header>
-                <h1>Salmos.ai - Remote</h1>
+            <AppHeader title="remote-control">
                 <Link to='/'>Server</Link>
-            </header>
+            </AppHeader>
             <div className="inline-container">
                 <div className={`padsbutton`}>
                     {
