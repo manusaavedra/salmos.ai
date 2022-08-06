@@ -28,7 +28,7 @@ const config = {
     entry: path.resolve(__dirname, 'src/index.js'),
     output: {
         path: path.resolve(__dirname, 'build'),
-        filename: '[name].[contenthash].js'
+        filename: '[name].js'
     },   
     plugins: [
         new HtmlWebpackPlugin({
@@ -39,13 +39,14 @@ const config = {
     module: {
         rules: [ rulesJs, rulesCss ]
     },
-    mode: 'development'
+    mode: 'none'
 }
 
 module.exports = (env, argv) => {
-    
     if (argv.mode === 'production') 
         config.mode = 'production'
+    else if (argv.mode === 'development')
+        config.mode = 'development'
     
     return config
 }
