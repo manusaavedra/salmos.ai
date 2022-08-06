@@ -1,6 +1,8 @@
 import { forwardRef, useContext, useEffect, useImperativeHandle, useRef, useState } from "react"
 import { Link } from "wouter"
+import Footer from "../components/Footer"
 import AppHeader from "../components/Header"
+import MasterVolume from '../components/MasterVolume'
 import { SocketContext } from "../context/ContextSocketIO"
 import { clearButtons, stringFormatted } from "../helpers"
 
@@ -8,22 +10,13 @@ export default function Slave() {
 
     const [pads, setPads] = useState([])
     const socket = useContext(SocketContext)
-    const volumeRef = useRef(0.7)
 
     useEffect(() => {
         socket.on('join', (data) => {
             console.log(data.body)
             setPads(data.body)
         })
-
-        socket.on('volume', (data) => {
-            volumeRef.current.value = data.body
-        })
     }, [])
-
-    const handleChangeVolume = (e) => {
-        socket.emit('volume', { body: e.target.value })
-    }
 
     return (
         <div className='app'>
@@ -41,15 +34,9 @@ export default function Slave() {
                 <div className='config-panel'>
                     <div className="input-group">
                         <label htmlFor="volume">Volume</label>
-                        <input
-                            ref={volumeRef}
-                            type="range"
-                            name='volume'
-                            min={0}
-                            max={1}
-                            step={0.01}
-                            onChange={handleChangeVolume} />
+                        <MasterVolume />
                     </div>
+                    <Footer />
                 </div>
             </div>
         </div>
@@ -131,11 +118,12 @@ const PadItem = forwardRef(({ sourceData }, ref) => {
     const handleMouseUp = (e) => {
         e.preventDefault()
         socket.emit('seeking', { id: sourceData.id, body: progress })
+        e.target.blur()
     }
 
     return (
         <div className='pad-item'>
-            <button key={sourceData.id}>
+            <button id={sourceData.id}>
                 <div className="metadata">
                     <span ref={refProgressText}>00:00</span>
                     <span ref={refRemainderText}>00:00</span>

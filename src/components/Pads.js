@@ -63,12 +63,14 @@ export function ListPads() {
 
     return (
         <>
+            <div className="pad-item">
+                <button onClick={handleAddPad}>
+                    <FaPlus size={24} />
+                </button>
+            </div>
             {
                 createPads()
             }
-            <button onClick={handleAddPad}>
-                <FaPlus size={24} />
-            </button>
         </>
     )
 }
@@ -77,7 +79,7 @@ const PadItem = forwardRef(({ onLoaded, padId }, ref) => {
 
     const [file, setFile] = useState({ name: '', data: null });
     const [progress, setProgress] = useState(0)
-    const soundRef = useRef(null);
+    const soundRef = useRef();
     const progressTextRef = useRef();
     const remainderTextRef = useRef();
     const checkInputRef = useRef();

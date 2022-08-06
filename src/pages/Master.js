@@ -2,6 +2,7 @@ import AppHeader from "../components/Header"
 import { ListPads } from "../components/Pads"
 import MasterVolume from "../components/MasterVolume"
 import { Link } from "wouter";
+import Footer from "../components/Footer";
 
 export default function Master() {
 
@@ -19,9 +20,7 @@ export default function Master() {
                         <label htmlFor="volume">Volume</label>
                         <MasterVolume />
                     </div>
-                    <footer>
-                        <span>Powered by <a href="https://github.com/manusaavedra">Manuel Saavedra</a> | this project uses react js and howler js</span>
-                    </footer>
+                    <Footer />
                 </div>
             </div>
         </div>
