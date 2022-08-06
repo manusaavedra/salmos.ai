@@ -1,5 +1,5 @@
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const rulesJs = {
     test: /\.js$/,
@@ -24,29 +24,21 @@ const rulesCss = {
     ]
 }
 
-const config = {
-    mode: 'development',
+module.exports = {
     entry: path.resolve(__dirname, 'src/index.js'),
     output: {
         path: path.resolve(__dirname, 'build'),
-        filename: '[name].js'
-    },   
+        filename: '[name].[contenthash].js'
+    },
     plugins: [
         new HtmlWebpackPlugin({
+            title: 'Salmos.ai - un reproductor remoto de canciones',
             template: path.resolve(__dirname, 'public/index.html'),
-            inject: 'body',        
+            inject: 'body',
         })
     ],
     module: {
-        rules: [ rulesJs, rulesCss ]
+        rules: [rulesJs, rulesCss]
     }
-}
-
-module.exports = (env, argv) => {
-    if (argv.mode === 'production') {
-        config.devtool = 'source-map'
-        config.mode = 'production'
-    }
-
-    return config
 };
+

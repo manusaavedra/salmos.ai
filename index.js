@@ -5,7 +5,7 @@ const socketIO = require('socket.io');
 
 const webpack = require('webpack');
 const webpackDevMiddleware = require('webpack-dev-middleware');
-const webpackConfig = require('./webpack.config.js');
+const webpackConfig = require('./webpack.common');
 
 const app = express();
 const server = http.createServer(app);
