@@ -34,7 +34,7 @@ const config = {
     plugins: [
         new HtmlWebpackPlugin({
             template: path.resolve(__dirname, 'public/index.html'),
-            inject: 'body'
+            inject: 'body',        
         })
     ],
     module: {
@@ -42,4 +42,11 @@ const config = {
     }
 }
 
-module.exports = config;
+module.exports = (env, argv) => {
+    if (argv.mode === 'production') {
+        config.devtool = 'source-map'
+        config.mode = 'production'
+    }
+
+    return config
+};
