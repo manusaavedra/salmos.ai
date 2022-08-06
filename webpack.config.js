@@ -39,13 +39,13 @@ const config = {
     module: {
         rules: [ rulesJs, rulesCss ]
     },
-    devServer: {
-        port: 3000,
-        compress: true,
-        open: true,
-        historyApiFallback: true,
-    },
     mode: 'development'
 }
 
-module.exports = config;
+module.exports = (env, argv) => {
+    
+    if (argv.mode === 'production') 
+        config.mode = 'production'
+    
+    return config
+}
